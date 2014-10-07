@@ -44,6 +44,8 @@ public class MainActivity extends Activity {
 	public void takeAPhoto() {
 		// TODO: Create an intent with the action
 		// MediaStore.ACTION_IMAGE_CAPTURE
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		
 		
 		// ComponentName cn = new ComponentName("es.softwareprocess.bogopicgen",
 		// "es.softwareprocess.bogopicgen.BogoPicGenActivity");
@@ -55,27 +57,63 @@ public class MainActivity extends Activity {
 		String folder = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + "/tmp";
 		File folderF = new File(folder);
-		if (!folderF.exists()) {
-			folderF.mkdir();
+		if (!folderF.exists()) { // Check if folder exists
+			folderF.mkdir();  // Make folder if it doesn't exist
 		}
 
 		// Create an URI for the picture file
 		String imageFilePath = folder + "/"
-				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
+				+ String.valueOf(System.currentTimeMillis()) + ".jpg"; // Image name is time in milliseconds
 		File imageFile = new File(imageFilePath);
-		imageFileUri = Uri.fromFile(imageFile);
+		imageFileUri = Uri.fromFile(imageFile);  // Image must be a Uri file
+		
 
 		// TODO: Put in the intent in the tag MediaStore.EXTRA_OUTPUT the URI
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
 		
 		// TODO: Start the activity (expecting a result), with the code
 		// CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 		
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 		// TODO: Handle the results from CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+			
+			TextView tv = (TextView) findViewById(R.id.status);
+			
+			if (resultCode == RESULT_OK) {
+				if (data != null && data.hasExtra("From")) {
+					String extraData = data.getStringExtra("From");
+					tv.setText("Photo OK!" + extraData);
+			} else {
+				tv.setText("Photo OK!");
+			}
+				ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
+				button.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
+				
+			} else if (data != null && resultCode == RESULT_CANCELED) {
+				if (data.hasExtra("From")) {
+					String extraData = data.getStringExtra("From");
+					tv.setText("Photo canceled" + extraData);
+				} else {
+					tv.setText("Photo canceled");
+				}
+				
+			} else {
+				if (data != null && data.hasExtra("From")) {
+					String extraData = data.getStringExtra("From");
+					tv.setText("Not sure what happened!" + extraData);
+				} else {
+					tv.setText("Not sure what happened!");
+				}
+				
+			}
+		}
 		
-		// TODO: Handle the cases for RESULT_OK, RESULT_CANCELLED, and others
+		// TODO: Handle the cases for RESULT_OK, RESULT_CANCELED, and others
 		
 		// When the result is OK, set text "Photo OK!" in the status
 		//		and set the image in the Button with:

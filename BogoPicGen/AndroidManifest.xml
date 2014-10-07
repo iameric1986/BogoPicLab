@@ -24,12 +24,12 @@
             android:name="es.softwareprocess.bogopicgen.BogoPicGenActivity"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" /> 
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             
-            <!-- Image capture in Standard mode -->
+            <!-- Image capture in Standard mode --> <!-- Implicit intent: I am an app that can be launched to acquire a picture -->
             <intent-filter>
                 <action android:name="android.media.action.IMAGE_CAPTURE" />
 

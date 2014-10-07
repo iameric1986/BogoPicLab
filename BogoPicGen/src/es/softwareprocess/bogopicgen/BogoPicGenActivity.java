@@ -90,15 +90,16 @@ public class BogoPicGenActivity extends Activity {
 
 	private void setBogoPic() {
 		// TODO: Show a toast with message "Generating Photo"
-		
+		Toast.makeText(this, "Generating photo", Toast.LENGTH_LONG).show();
 		
 		// TODO: Get a reference to the image button
-		
+		ImageButton ib = (ImageButton) findViewById(R.id.TakeAPhoto);
 		
 		// Generate a bogopic
 		ourBMP = BogoPicGen.generateBitmap(400, 400);
 		
 		// TODO: Assign the bogopic to the button with setImageBitmap
+		ib.setImageBitmap(ourBMP);
 		
 	}
 
@@ -112,27 +113,43 @@ public class BogoPicGenActivity extends Activity {
 		try {	
 			if (intent.getExtras() != null) {
 				// TODO: If cancelled, show a toast, set result to RESULT_CANCELED, finish and return 
-				
+				if (cancel) {
+					Toast.makeText(this, "Photo canceled", Toast.LENGTH_LONG).show();
+					Intent random = new Intent();
+					random.putExtra("From", "OMG ITS CANCELED");
+					setResult(RESULT_CANCELED, random);
+					finish();
+					return;
+				}
 				
 				// If accepted save the picture
 				File intentPicture = getPicturePath(intent);
 				saveBMP(intentPicture, ourBMP);
 				
 				// TODO: set result to RESULT_OK
+				Intent random = new Intent();
+				random.putExtra("From", "YAY IT WORKED");
+				setResult(RESULT_OK, random);
 				
 			} else {
 				Toast.makeText(this, "Photo Cancelled: No Reciever?",
 						Toast.LENGTH_LONG).show();
-				setResult(RESULT_CANCELED);
+				Intent random = new Intent();
+				random.putExtra("From", "No reciever question mark");
+				setResult(RESULT_CANCELED, random);
 			}
 		} catch (FileNotFoundException e) {
 			Toast.makeText(this, "Couldn't Find File to Write to?",
 					Toast.LENGTH_LONG).show();
-			setResult(RESULT_CANCELED);
+			Intent random = new Intent();
+			random.putExtra("From", "Can't find where to put this thing");
+			setResult(RESULT_CANCELED, random);
 		} catch (IOException e) {
 			Toast.makeText(this, "Couldn't Write File!", Toast.LENGTH_LONG)
 					.show();
-			setResult(RESULT_CANCELED);
+			Intent random = new Intent();
+			random.putExtra("From", "Can't save this thing");
+			setResult(RESULT_CANCELED, random);
 		}
 		finish();
 	}
